@@ -1,0 +1,67 @@
+[
+  {
+    "title": "Dashboard",
+    "path": "/",
+    "subMenu": []
+  },
+  {
+    "title": "Game Management",
+    "subMenu": [
+      {
+        "title": "Game Name",
+        "path": "/creategame"
+      },
+      {
+        "title": "Game Rates",
+        "path": "/updateresult"
+      }
+    ]
+  },
+  {
+    "title": "Result Management",
+    "subMenu": [
+      {
+        "title": "Declare Result",
+        "path": "/creategame"
+      },
+      {
+        "title": "Result History",
+        "path": "/updateresult"
+      }
+    ]
+  },
+  {
+    "title": "User Management",
+    "subMenu": [
+      {
+        "title": "Users Management",
+        "path": "/creategame"
+      },
+      {
+        "title": "Unapprove User",
+        "path": "/updateresult"
+      }
+    ]
+  },
+  {
+    "title": "Wallet Management",
+    "subMenu": [
+      {
+        "title": "Fund History",
+        "path": "/creategame"
+      },
+      {
+        "title": "Fund Request",
+        "path": "/updateresult"
+      },
+      {
+        "title": "Withdraw Request",
+        "path": "/updateresult"
+      },
+      {
+        "title": "Add Fund",
+        "path": "/updateresult"
+      }
+    ]
+  }
+]
