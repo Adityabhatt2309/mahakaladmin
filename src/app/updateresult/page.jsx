@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
-import { getList, getGameById, updateGameResult } from "../api/services"; // Assuming these are your API functions
+import { getList, update } from "../api/services"; // Assuming these are your API functions
 import { APIENDPOINT } from "../api/apiEndpoints";
 
 const UpdateResult = () => {
@@ -64,44 +64,56 @@ const UpdateResult = () => {
   };
 
   // Handle save open result
-  const handleSaveOpenResult = async () => {
-    if (!openResult) {
-      setError("Please enter the open result");
-      return;
-    }
-    setLoading(true);
-    try {
-      await updateGameResult(APIENDPOINT.updateGameResult(selectedGameId), {
-        date: selectedDate,
-        openResult,
-      });
+const handleSaveOpenResult = async () => {
+  if (!openResult) {
+    setError("Please enter the open result");
+    return;
+  }
+  setLoading(true);
+  try {
+    const response = await update(`${selectedGameId}/updateOpenDigitResult`, {
+      openDigitResult: openResult,
+    });
+    // If the response is successful, reset the open result field
+    if (response.data.game) { // Adjust based on actual response structure
+      setOpenResult("");  // Reset open result
       alert("Open result updated successfully!");
-    } catch (error) {
+    } else {
       setError("Failed to update open result");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    setError("Failed to update open result");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle save close result
-  const handleSaveCloseResult = async () => {
-    if (!closeResult) {
-      setError("Please enter the close result");
-      return;
-    }
-    setLoading(true);
-    try {
-      await updateGameResult(APIENDPOINT.updateGameResult(selectedGameId), {
-        date: selectedDate,
-        closeResult,
-      });
+ // Handle save close result
+const handleSaveCloseResult = async () => {
+  if (!closeResult) {
+    setError("Please enter the close result");
+    return;
+  }
+  setLoading(true);
+  try {
+    const response = await update(`${selectedGameId}/updateCloseDigitResult`, {
+      closeDigitResult: closeResult,
+    });
+    // If the response is successful, reset the close result field
+    if (response?.data?.game) { // Adjust based on actual response structure
+      setCloseResult("");  // Reset close result
       alert("Close result updated successfully!");
-    } catch (error) {
+    } else {
       setError("Failed to update close result");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    setError("Failed to update close result");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const getRelevantCloseDigit = (totalDigits) => {
     const totalStr = totalDigits.toString();
@@ -121,7 +133,8 @@ const UpdateResult = () => {
 
         <div className="mb-4">
           <label className="block mb-2 font-semibold">Select Game</label>
-          <select
+          {
+            games &&<select
             className="p-2 border border-gray-300 rounded w-full"
             value={selectedGameId}
             onChange={handleGameChange}
@@ -133,6 +146,8 @@ const UpdateResult = () => {
               </option>
             ))}
           </select>
+          }
+          
         </div>
 
         <div className="mb-4">
