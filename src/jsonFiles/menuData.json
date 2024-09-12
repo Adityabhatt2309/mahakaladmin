@@ -22,11 +22,11 @@
     "subMenu": [
       {
         "title": "Declare Result",
-        "path": "/creategame"
+        "path": "/updateresult"
       },
       {
         "title": "Result History",
-        "path": "/updateresult"
+        "path": "/resulthistory"
       }
     ]
   },
@@ -35,11 +35,7 @@
     "subMenu": [
       {
         "title": "Users Management",
-        "path": "/creategame"
-      },
-      {
-        "title": "Unapprove User",
-        "path": "/updateresult"
+        "path": "/usermanagement"
       }
     ]
   },

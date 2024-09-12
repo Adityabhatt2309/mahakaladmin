@@ -3,5 +3,7 @@ export const APIENDPOINT = {
   gameList:"/games",
   gameAdd:"/games/create",
   gameUpdate:"/games",
-  gameDelete:"/games"
+  gameDelete:"/games",
+  userList:"/users",
+  userActive:"/users"
 };
