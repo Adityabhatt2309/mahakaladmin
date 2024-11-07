@@ -3,10 +3,10 @@ export const APIENDPOINT = {
   subAdminCreate: "/auth/subadmin/register",
   updateSubadminStatus: "/auth/update-subadmin-status",
   subadminList: "/auth/subadmins",
-  gameCreate: "/api/game",
+  gameCreate: "/game",
   gameList: "/games", //subadmin use only
-  gameUpdate: "/api/game",
-  gameDelete: "/api/game",
+  gameUpdate: "/game",
+  gameDelete: "/game",
   updateOpenDigitResult: "",
   getUsersBySubadmin: "/auth/subadmin/users",
   getUsersActive: "/auth/user/statusupdate",
