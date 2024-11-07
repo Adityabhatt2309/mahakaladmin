@@ -17,7 +17,7 @@ const ResultHistory = () => {
       setLoading(true);
       try {
         const response = await getList(APIENDPOINT.gameList); // Fetching results from the API
-        setResults(response.data.games);
+        setResults(response.data);
       } catch (error) {
         setError("Failed to fetch result history");
       } finally {
@@ -28,20 +28,21 @@ const ResultHistory = () => {
   }, []);
 
   // Filter the results based on the search term
-  const filteredResults = results.filter((result) =>
-    result.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredResults = results?.filter((result) =>
+    result?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Get the current results based on pagination
   const indexOfLastResult = currentPage * resultsPerPage;
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
-  const currentResults = filteredResults.slice(
+  const currentResults = filteredResults?.slice(
     indexOfFirstResult,
     indexOfLastResult
   );
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  console.log(currentResults, "currentResults");
 
   return (
     <Layout>
@@ -87,19 +88,19 @@ const ResultHistory = () => {
                       {result.name || "NA"}
                     </td>
                     <td className="border px-2 py-2 text-xs md:text-sm">
-                      {new Date(result.resultDate).toLocaleString() || "NA"}
+                      {new Date(result.createdAt).toLocaleString() || "NA"}
                     </td>
                     <td className="border px-2 py-2 text-xs md:text-sm">
-                      {new Date(result.openDeclareDate).toLocaleString() || "NA"}
+                      {new Date(result.createdAt).toLocaleString() || "NA"}
                     </td>
                     <td className="border px-2 py-2 text-xs md:text-sm">
-                      {new Date(result.closeDeclareDate).toLocaleString() || "NA"}
+                      {new Date(result.createdAt).toLocaleString() || "NA"}
                     </td>
                     <td className="border px-2 py-2 text-xs md:text-sm">
-                      {result.openDigit || "NA"}
+                      {result?.openDigitResult || "NA"}-{result?.singleOpenResult || "NA"}
                     </td>
                     <td className="border px-2 py-2 text-xs md:text-sm">
-                      {result.closeDigit || "NA"}
+                      {result.closeDigitResult || "NA"}-{result?.singleCloseResult || "NA"}
                     </td>
                   </tr>
                 ))
@@ -117,20 +118,18 @@ const ResultHistory = () => {
         {/* Pagination */}
         <div className="flex justify-center mt-4">
           <button
-            className={`px-4 py-2 mr-2 rounded ${
-              currentPage === 1 ? "bg-gray-300" : "bg-[#2c907f] text-white"
-            }`}
+            className={`px-4 py-2 mr-2 rounded ${currentPage === 1 ? "bg-gray-300" : "bg-[#2c907f] text-white"
+              }`}
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
           >
             Previous
           </button>
           <button
-            className={`px-4 py-2 ml-2 rounded ${
-              currentResults.length < resultsPerPage
-                ? "bg-gray-300"
-                : "bg-[#2c907f] text-white"
-            }`}
+            className={`px-4 py-2 ml-2 rounded ${currentResults.length < resultsPerPage
+              ? "bg-gray-300"
+              : "bg-[#2c907f] text-white"
+              }`}
             onClick={() => paginate(currentPage + 1)}
             disabled={currentResults.length < resultsPerPage}
           >

@@ -13,9 +13,18 @@ export const loginUser = createAsyncThunk(
         email,
         password,
       });
-      const { token } = response.data;
-      // Set token in cookies
+      const { token, user } = response?.data || {};
+      const role = user?.role;
+      const userId = user?.id;
       setCookie("authToken", token, {
+        maxAge: 60 * 60 * 24, // 1 day
+        path: "/",
+      });
+      setCookie("role", role, {
+        maxAge: 60 * 60 * 24, // 1 day
+        path: "/",
+      });
+      setCookie("userId", userId, {
         maxAge: 60 * 60 * 24, // 1 day
         path: "/",
       });

@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Dashboard",
+    "path": "/superadmin/dashboard",
+    "subMenu": []
+  },
+  {
+    "title": "Sub Admin Management",
+    "subMenu": [
+      {
+        "title": "Create Sub Admin",
+        "path": "/superadmin/admin-create"
+      },
+      {
+        "title": "Subadmin Manage",
+        "path": "/superadmin/admin-list"
+      }
+    ]
+  }
+]

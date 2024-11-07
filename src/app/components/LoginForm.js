@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { loginUser } from "../redux/authSlice";
-import LoadingModal from './LoadingModal';
+import LoadingModal from "./LoadingModal";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -14,10 +14,10 @@ const LoginForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   const token = dispatch(loginUser({ email, password }));
-   if(token){
-    router.push('/');
-   }
+    const token = dispatch(loginUser({ email, password }));
+    if (token) {
+      router.push("/");
+    }
   };
 
   return (
@@ -71,7 +71,7 @@ const LoginForm = () => {
           {error && <p className="text-red-500 text-center">{error}</p>}
         </form>
       </div>
-      <LoadingModal visible={loading}/>
+      <LoadingModal visible={loading} />
     </div>
   );
 };

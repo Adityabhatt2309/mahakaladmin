@@ -1,46 +1,54 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
-import Modal from '../components/Modal';
-import { add, update } from '../api/services'; // Update function
-import { APIENDPOINT } from '../api/apiEndpoints';
-import TableGameList from '../components/TableGameList';
-import Loader from '../components/LoadingModal';
+"use client";
+import React, { useState, useEffect } from "react";
+import Layout from "../components/Layout";
+import Modal from "../components/Modal";
+import { add, update } from "../api/services"; // Update function
+import { APIENDPOINT } from "../api/apiEndpoints";
+import TableGameList from "../components/TableGameList";
+import Loader from "../components/LoadingModal";
 
 const CreateGame = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [name, setName] = useState('');          // Game Name input state
-  const [openTime, setOpenTime] = useState('');  // Open Time input state
-  const [closeTime, setCloseTime] = useState(''); // Close Time input state
+  const [name, setName] = useState(""); // Game Name input state
+  const [openTime, setOpenTime] = useState(""); // Open Time input state
+  const [closeTime, setCloseTime] = useState(""); // Close Time input state
   const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState('');        // Error state
+  const [error, setError] = useState(""); // Error state
   const [gameListUpdated, setGameListUpdated] = useState(false); // State to trigger re-fetch of game list
-  const [isEditMode, setIsEditMode] = useState(false);  // State to toggle edit mode
+  const [isEditMode, setIsEditMode] = useState(false); // State to toggle edit mode
   const [editingGameId, setEditingGameId] = useState(null); // Store game ID when editing
 
   // Function to handle adding a game
   const handleAddGame = async () => {
-    setLoading(true);  // Start loading
-    setError('');      // Clear previous errors
+    if (!name || !openTime || !closeTime) {
+      setError("All fields are required");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
     try {
       const response = isEditMode
-        ? await update(`${APIENDPOINT.gameUpdate}/${editingGameId}`, { name, openTime, closeTime })
-        : await add(APIENDPOINT.gameAdd, { name, openTime, closeTime });
-
+        ? await update(`${APIENDPOINT.gameUpdate}/${editingGameId}`, {
+            name,
+            openTime,
+            closeTime,
+          })
+        : await add(APIENDPOINT.gameCreate, { name, openTime, closeTime });
       if (response) {
-        console.log({ response });
-        setIsModalOpen(false); // Close the modal after adding/editing the game
-        setName('');        // Reset input fields
-        setOpenTime('');
-        setCloseTime('');
-        setEditingGameId(null); // Reset editing ID
-        setIsEditMode(false);   // Exit edit mode
-        setGameListUpdated(prev => !prev);  // Trigger re-fetch of game list
+        setIsModalOpen(false);
+        setName("");
+        setOpenTime("");
+        setCloseTime("");
+        setEditingGameId(null);
+        setIsEditMode(false);
+        setGameListUpdated((prev) => !prev);
       }
     } catch (error) {
-      setError(error.message || 'Error saving game'); // Set error message
+      setError(error.message || "Error saving game");
     } finally {
-      setLoading(false);  // Stop loading
+      setLoading(false);
     }
   };
 
@@ -58,7 +66,7 @@ const CreateGame = () => {
     <Layout>
       <div className="bg-white rounded p-5 mx-auto">
         <div className="flex justify-between border-b-2 pb-4">
-          <h1 className="font-bold">{isEditMode ? 'Edit Game' : 'Game Add'}</h1>
+          <h1 className="font-bold">{isEditMode ? "Edit Game" : "Game Add"}</h1>
           <button
             className="bg-[#2c907f] rounded px-3 py-2 text-white font-bold"
             onClick={() => {
@@ -71,11 +79,16 @@ const CreateGame = () => {
         </div>
 
         {/* Pass the `gameListUpdated` state to `TableGameList`, and handle edit click */}
-        <TableGameList gameListUpdated={gameListUpdated} onEdit={handleEditGame} />
+        <TableGameList
+          gameListUpdated={gameListUpdated}
+          onEdit={handleEditGame}
+        />
 
         {/* Modal for Adding/Edit Game */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <h2 className="text-lg font-bold mb-4">{isEditMode ? 'Edit Game' : 'Create New Game'}</h2>
+          <h2 className="text-lg font-bold mb-4">
+            {isEditMode ? "Edit Game" : "Create New Game"}
+          </h2>
 
           {/* Show Loader when loading */}
           {loading && <Loader visible={loading} />}
@@ -87,7 +100,9 @@ const CreateGame = () => {
             <>
               {/* Game Name Input */}
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Game Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Game Name
+                </label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded p-2"
@@ -99,7 +114,9 @@ const CreateGame = () => {
 
               {/* Open Time Input */}
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Open Time</label>
+                <label className="block text-sm font-medium mb-1">
+                  Open Time
+                </label>
                 <input
                   type="time"
                   className="w-full border border-gray-300 rounded p-2"
@@ -110,7 +127,9 @@ const CreateGame = () => {
 
               {/* Close Time Input */}
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Close Time</label>
+                <label className="block text-sm font-medium mb-1">
+                  Close Time
+                </label>
                 <input
                   type="time"
                   className="w-full border border-gray-300 rounded p-2"
@@ -125,7 +144,11 @@ const CreateGame = () => {
                 onClick={handleAddGame}
                 disabled={loading} // Disable button while loading
               >
-                {loading ? 'Saving...' : isEditMode ? 'Update Game' : 'Add Game'}
+                {loading
+                  ? "Saving..."
+                  : isEditMode
+                  ? "Update Game"
+                  : "Add Game"}
               </button>
             </>
           )}

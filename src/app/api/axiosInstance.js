@@ -3,7 +3,7 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 
 const axiosInstance = axios.create({
-  baseURL: "https://mahakal-api.vercel.app/api", // Replace with your API base URL
+  baseURL: "https://node-api-learn-new.vercel.app/api/", // Replace with your API base URL
   headers: {
     "Content-Type": "application/json",
   },

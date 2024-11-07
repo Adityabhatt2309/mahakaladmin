@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
-import { add, getList } from "../api/services";
+import { add, getList, update } from "../api/services";
 import { APIENDPOINT } from "../api/apiEndpoints";
 
 const UserManagementTable = () => {
@@ -18,9 +18,9 @@ const UserManagementTable = () => {
   // Function to fetch users (mocking API call here with static data)
   const fetchUsers = async () => {
     try {
-      const response = await getList(APIENDPOINT.userList);
+      const response = await getList(APIENDPOINT.getUsersBySubadmin);
       if (response) {
-        setUsers(response?.data?.data);
+        setUsers(response?.data);
       }
     } catch (error) {
       console.log(error);
@@ -29,13 +29,13 @@ const UserManagementTable = () => {
 
   // Handle status toggle (mock API call for status update)
   const handleToggleStatus = async (user) => {
-    const updatedStatus = user.active === "true" ? "false" : "true";
+    const updatedStatus = user.status === "active" ? "inactive" : "active";
     const userId = user._id;
     try {
       // Assume this is the API call to update user status
-      await add(`${APIENDPOINT.userActive}/${userId}/status`, {
-        userId: user._id,
-        active: updatedStatus,
+      await update(`${APIENDPOINT.getUsersActive}`, {
+        userId: userId,
+        status: updatedStatus,
       });
       fetchUsers();
     } catch (error) {
@@ -43,11 +43,9 @@ const UserManagementTable = () => {
     }
   };
 
-  console.log(users,"users")
-
   // Handle search filter based on username
   const filteredUsers = users?.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Pagination logic
@@ -94,27 +92,26 @@ const UserManagementTable = () => {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((user, index) => (
+            {currentUsers && currentUsers?.map((user, index) => (
               <tr key={user.id}>
                 <td className="border px-4 py-2">
                   {index + 1 + (currentPage - 1) * usersPerPage}
                 </td>
                 <td className="border px-4 py-2">
                   <button
-                    className={`px-3 text-white rounded ${
-                      user.active === true ? "bg-red-500" : "bg-green-600"
-                    }`}
+                    className={`px-3 text-white rounded ${user.active === true ? "bg-red-500" : "bg-green-600"
+                      }`}
                     onClick={() => handleToggleStatus(user)}
                   >
-                    {user.active === true?"Inactive":"Active"}
+                    {user.status === "active" ? "Inactive" : "Active"}
                   </button>
                 </td>
-                <td className="border px-4 py-2">{user.active === true?"true":"false" || "NA"}</td>
-                <td className="border px-4 py-2">{user.username || "NA"}</td>
+                <td className="border px-4 py-2">{user.status === "active" ? "active" : "inactive"}</td>
+                <td className="border px-4 py-2">{user.name || "NA"}</td>
                 <td className="border px-4 py-2">{user.mobileNumber || "NA"}</td>
                 <td className="border px-4 py-2">{user.email || "N/A"}</td>
                 <td className="border px-4 py-2">{user.mobileNumber || "N/A"}</td>
-                <td className="border px-4 py-2">{user?.createdDate ? user.createdDate.slice(0, 10):"NA"}</td>
+                <td className="border px-4 py-2">{user?.createdDate ? user.createdDate.slice(0, 10) : "NA"}</td>
               </tr>
             ))}
           </tbody>

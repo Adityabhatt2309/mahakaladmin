@@ -11,9 +11,14 @@ export default function Home() {
 
   useEffect(() => {
     const token = getCookie("authToken"); // Get the authentication token from cookies
+    const userrole = getCookie("role"); // Get the authentication token from cookies
     if (token) {
       setIsAuthenticated(true);
-      router.push("/");
+      if (userrole === "admin") {
+        router.push("/superadmin/dashboard");
+      } else {
+        router.push("/");
+      }
     } else {
       router.push("/login");
     }

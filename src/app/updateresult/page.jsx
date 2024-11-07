@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { getList, update } from "../api/services"; // Assuming these are your API functions
 import { APIENDPOINT } from "../api/apiEndpoints";
+import { getCookie } from "cookies-next";
 
 const UpdateResult = () => {
   const [games, setGames] = useState([]);
@@ -13,6 +14,7 @@ const UpdateResult = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showResultFields, setShowResultFields] = useState(false);
+  const userId = getCookie("userId");
 
   // Fetch game list when the component mounts
   useEffect(() => {
@@ -20,7 +22,7 @@ const UpdateResult = () => {
       setLoading(true);
       try {
         const response = await getList(APIENDPOINT.gameList);
-        setGames(response.data.games);
+        setGames(response.data);
       } catch (error) {
         setError("Failed to fetch games");
       } finally {
@@ -64,56 +66,52 @@ const UpdateResult = () => {
   };
 
   // Handle save open result
-const handleSaveOpenResult = async () => {
-  if (!openResult) {
-    setError("Please enter the open result");
-    return;
-  }
-  setLoading(true);
-  try {
-    const response = await update(`${selectedGameId}/updateOpenDigitResult`, {
-      openDigitResult: openResult,
-    });
-    // If the response is successful, reset the open result field
-    if (response.data.game) { // Adjust based on actual response structure
-      setOpenResult("");  // Reset open result
-      alert("Open result updated successfully!");
-    } else {
+  const handleSaveOpenResult = async () => {
+    if (!openResult) {
+      setError("Please enter the open result");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await update(`games/${userId}/open/${selectedGameId}`, {
+        openDigitResult: openResult,
+      });
+      // If the response is successful, reset the open result field
+      if (response.data) {
+        setOpenResult(""); // Reset open result
+        alert("Open result updated successfully!");
+      } else {
+        setError("Failed to update open result");
+      }
+    } catch (error) {
       setError("Failed to update open result");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    setError("Failed to update open result");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
-  // Handle save close result
- // Handle save close result
-const handleSaveCloseResult = async () => {
-  if (!closeResult) {
-    setError("Please enter the close result");
-    return;
-  }
-  setLoading(true);
-  try {
-    const response = await update(`${selectedGameId}/updateCloseDigitResult`, {
-      closeDigitResult: closeResult,
-    });
-    // If the response is successful, reset the close result field
-    if (response?.data?.game) { // Adjust based on actual response structure
-      setCloseResult("");  // Reset close result
-      alert("Close result updated successfully!");
-    } else {
+  const handleSaveCloseResult = async () => {
+    if (!closeResult) {
+      setError("Please enter the close result");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await update(`games/${userId}/close/${selectedGameId}`, {
+        closeDigitResult: closeResult,
+      });
+      if (response?.data) {
+        setCloseResult(""); // Reset close result
+        alert("Close result updated successfully!");
+      } else {
+        setError("Failed to update close result");
+      }
+    } catch (error) {
       setError("Failed to update close result");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    setError("Failed to update close result");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const getRelevantCloseDigit = (totalDigits) => {
     const totalStr = totalDigits.toString();
@@ -133,21 +131,20 @@ const handleSaveCloseResult = async () => {
 
         <div className="mb-4">
           <label className="block mb-2 font-semibold">Select Game</label>
-          {
-            games &&<select
-            className="p-2 border border-gray-300 rounded w-full"
-            value={selectedGameId}
-            onChange={handleGameChange}
-          >
-            <option value="">-- Select a Game --</option>
-            {games.map((game) => (
-              <option key={game._id} value={game._id}>
-                {game.name}
-              </option>
-            ))}
-          </select>
-          }
-          
+          {games?.length > 0 && (
+            <select
+              className="p-2 border border-gray-300 rounded w-full"
+              value={selectedGameId}
+              onChange={handleGameChange}
+            >
+              <option value="">-- Select a Game --</option>
+              {games?.map((game) => (
+                <option key={game._id} value={game._id}>
+                  {game.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="mb-4">
